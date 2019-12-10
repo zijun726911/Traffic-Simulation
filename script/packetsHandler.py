@@ -37,9 +37,9 @@ def getTotalBytes(packets):
 def getAvgByterate(packets):
     return getTotalBytes(packets)/(packets[-1].time-packets[0].time)
 
-def autocorr(x1):
+def autocorr(x):
     '''numpy.correlate, non partial'''
-    x=np.array(x1)
+    x=np.array(x)
     mean=x.mean()
     var=np.var(x)
     xp=x-mean

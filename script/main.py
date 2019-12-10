@@ -8,7 +8,7 @@ import math
 import random
 
 if __name__ == '__main__':
-    fileNum=1
+    fileNum=10
     packets=readPcap(fileNum)
     timestamp=readTimestamp(fileNum*10000)
     packets=replaceTimestemp(packets,timestamp)
@@ -27,12 +27,13 @@ if __name__ == '__main__':
     print("variance bytesPerSec get from every  every 0.0001 slots:", np.std(byteRates0001))
     print("variance bytesPerSec get from every  every 0.0002 slots:", np.std(byteRates0002))
 
-    # sns.lineplot(x=range(len(byteRates0001)), y=list(map(int,byteRates0001)));
+    fig=sns.lineplot(x=range(len(byteRates0001)), y=list(map(int,byteRates0001))) .get_figure()#.savefig('fig.png',dpi=1080);
     # sns.distplot(list(map(int,byteRates0001)))
 
-
+    fig.set_size_inches( 30, 10)
+    fig.set(xticks=np.arange(1, 4, 1))
     # pd.plotting.autocorrelation_plot(list(map(int,byteRates0001)))
 
-    # pd.plotting.autocorrelation_plot([1]*10 )
-    # plt.show()
-    print(autocorr([2,3,4,3,7]))
+
+    plt.show()
+    # print(autocorr())
