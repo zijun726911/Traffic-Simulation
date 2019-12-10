@@ -7,6 +7,7 @@ def splitToTimeSlot(packets,timeInterval):
     startTime = Decimal(packets[0].time)
     byteRates = []
     byteSlots = []
+    timestamps=[]
     thisBytes=Decimal(0)
     startThisSlot = startTime
     endThisSlot = startThisSlot + timeSlotInterval
@@ -21,15 +22,17 @@ def splitToTimeSlot(packets,timeInterval):
 
             startThisSlot=endThisSlot
             endThisSlot= startThisSlot + timeSlotInterval
+            timestamps.append(packet.time)
             byteSlots.append(thisBytes)
             byteRates.append(thisBytes/timeSlotInterval)
             thisBytes=Decimal(packet.wirelen) #add first packet to the next slot
 
     #add last slot
+    timestamps.append(packet.time)
     byteSlots.append(thisBytes)
     byteRates.append(thisBytes / timeSlotInterval)
 
-    return byteSlots,byteRates
+    return timestamps,byteSlots,byteRates
 
 def getTotalBytes(packets):
     return sum(map(lambda packet:Decimal(packet.wirelen),packets))
