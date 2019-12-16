@@ -8,6 +8,8 @@ def splitToTimeSlot(packets,timeInterval):
     byteRates = []
     byteSlots = []
     timestamps=[]
+    packNums=[]
+    thisPackNum=0
     thisBytes=Decimal(0)
     startThisSlot = startTime
     endThisSlot = startThisSlot + timeSlotInterval
@@ -15,7 +17,7 @@ def splitToTimeSlot(packets,timeInterval):
 
         if startThisSlot <= packet.time < endThisSlot:
             thisBytes += packet.wirelen
-
+            thisPackNum+=1
         else:
             #when step into this  branch, it must  iterate to the fist packet of the next slot
             # start next slot
@@ -25,14 +27,16 @@ def splitToTimeSlot(packets,timeInterval):
             timestamps.append(packet.time)
             byteSlots.append(thisBytes)
             byteRates.append(thisBytes/timeSlotInterval)
+            packNums.append(thisPackNum)
             thisBytes=Decimal(packet.wirelen) #add first packet to the next slot
-
+            thisPackNum=1
     #add last slot
     timestamps.append(packet.time)
     byteSlots.append(thisBytes)
+    packNums.append(thisPackNum)
     byteRates.append(thisBytes / timeSlotInterval)
 
-    return timestamps,byteSlots,byteRates
+    return packNums,timestamps,byteSlots,byteRates
 
 def getTotalBytes(packets):
     return sum(map(lambda packet:Decimal(packet.wirelen),packets))
@@ -49,7 +53,8 @@ def autocorr(x):
     corr = np.correlate(xp, xp, mode='full')
     result=corr[corr.size//2:]/(var*x.size)
 
-    # result=sm.tsa.acf(x)
     return result
+
+ # result=sm.tsa.acf(x)
 
 

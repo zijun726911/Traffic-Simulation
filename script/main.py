@@ -13,7 +13,7 @@ if __name__ == '__main__':
     timestamp=readTimestamp(fileNum*10000)
     packets=replaceTimestemp(packets,timestamp)
     timestamps,byteSlots0001, byteRates0001=splitToTimeSlot(packets, 0.0001)
-    byteSlots0002, byteRates0002 = splitToTimeSlot(packets, 0.0002)
+    timestamps,byteSlots0002, byteRates0002 = splitToTimeSlot(packets, 0.0002)
     print("total bytes that get from every       packets:", getTotalBytes(packets))
     print("total bytes that get from every 0.0001s slots:", sum(byteSlots0001))
     print("total bytes that get from every 0.0002s slots:", sum(byteSlots0002))
@@ -30,8 +30,7 @@ if __name__ == '__main__':
     fig=sns.lineplot(x=range(len(byteRates0001)), y=list(map(int,byteRates0001))) .get_figure()#.savefig('fig.png',dpi=1080);
     # sns.distplot(list(map(int,byteRates0001)))
 
-    fig.set_size_inches( 30, 10)
-    fig.set(xticks=np.arange(1, 4, 1))
+
     # pd.plotting.autocorrelation_plot(list(map(int,byteRates0001)))
 
 
