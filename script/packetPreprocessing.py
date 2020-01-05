@@ -1,46 +1,40 @@
 from functools import reduce
 
-from scapy.all import rdpcap
+from scapy.all import rdpcap, RawPcapReader
 import numpy as np
 import scipy.stats as st
 from scapy.packet import Packet
 from scipy.stats import norm
 from scipy.stats import kstest
-
+import libpcap
 
 from decimal import Decimal
 import time
-def readPcap(fileNum):
-    packetsFile=(packet for i in range(fileNum)
-                            for packet in rdpcap("..\dataset\equinix-nyc.dirA.20180315-130000.UTC.anon.pcap"
-                                                 "\splitted(10000 packets per file)"
-                                                 "\out_" + str(i).zfill(5) + "_20180315210000.pcap")
-                 )
+def readPcap(fileName):
+    fileName = "..\dataset\equinix-nyc.dirA.20180315-130000.UTC.anon.pcap\equinix-nyc.dirA.20180315-130000.UTC.anon.pcap"
 
-    return packetsFile
+    packets = RawPcapReader(fileName)
 
-def readTimestamp(lines):
 
-    BYTES_PER_LINE=21
+    return packets
+
+def readTimestamp(timestampsFileName):
+
     timestampsPath = "..\dataset\equinix-nyc.dirA.20180315-130000.UTC.anon.times"
     timestampsFileName = "\equinix-nyc.dirA.20180315-130000.UTC.anon.times"
     timestampsFile = open(timestampsPath + timestampsFileName)
-    if isinstance(lines,int):
-        timestamps = timestampsFile.readlines(lines*BYTES_PER_LINE-1)
 
-    timestampsDecimal = map(lambda line: Decimal(line.strip()), timestamps)
+    timestamps = timestampsFile.readlines()
+
+    timestampsDecimal = list(map(lambda line: Decimal(line.strip()), timestamps))
     return timestampsDecimal
 
 
-def replaceTimestemp(packets,timestampsDecimal):
-    def _replaceTimestemp(packet, timestamp):
-        packet.time = timestamp
-        return packet
+def getwirelen(packets):
+    return list(map(lambda packet: packet[1].wirelen, packets))
 
-    packets = [_replaceTimestemp(packet, timestamp)
-               for packet,timestamp in zip(packets,timestampsDecimal)]
 
-    return packets
+
 
 
 

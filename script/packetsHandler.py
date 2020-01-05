@@ -2,39 +2,40 @@ from decimal import Decimal
 import numpy as np
 import  statsmodels.api as sm
 
-def splitToTimeSlot(packets,timeInterval):
-    timeSlotInterval=Decimal(timeInterval)
-    startTime = Decimal(packets[0].time)
+def splitToTimeSlot(timestampsAndWirelens,timeInterval):
+    timeInterval=Decimal(str(timeInterval))
+    startTime = Decimal(str(timestampsAndWirelens[0][0]))  #get the timestamp of the first packet
     byteRates = []
     byteSlots = []
     timestamps=[]
     packNums=[]
     thisPackNum=0
-    thisBytes=Decimal(0)
+    thisBytes=0
     startThisSlot = startTime
-    endThisSlot = startThisSlot + timeSlotInterval
-    for packet in packets:
+    endThisSlot = startThisSlot + timeInterval
+    for timestamp, wirelen in timestampsAndWirelens:
 
-        if startThisSlot <= packet.time < endThisSlot:
-            thisBytes += packet.wirelen
+        if startThisSlot <= timestamp < endThisSlot:
+            thisBytes += wirelen
             thisPackNum+=1
         else:
             #when step into this  branch, it must  iterate to the fist packet of the next slot
             # start next slot
-
             startThisSlot=endThisSlot
-            endThisSlot= startThisSlot + timeSlotInterval
-            timestamps.append(packet.time)
+            endThisSlot= startThisSlot + timeInterval
+            timestamps.append(timestamp)
             byteSlots.append(thisBytes)
-            byteRates.append(thisBytes/timeSlotInterval)
+            byteRates.append(thisBytes/timeInterval)
             packNums.append(thisPackNum)
-            thisBytes=Decimal(packet.wirelen) #add first packet to the next slot
+            thisBytes=wirelen   #add first packet to the next slot
             thisPackNum=1
+
+
     #add last slot
-    timestamps.append(packet.time)
+    timestamps.append(timestamp)
     byteSlots.append(thisBytes)
     packNums.append(thisPackNum)
-    byteRates.append(thisBytes / timeSlotInterval)
+    byteRates.append(thisBytes / timeInterval)
 
     return packNums,timestamps,byteSlots,byteRates
 

@@ -7,12 +7,12 @@ import pandas as pd
 import math
 import random
 
+
 if __name__ == '__main__':
-    fileNum=10
-    packets=readPcap(fileNum)
-    timestamp=readTimestamp(fileNum*10000)
-    packets=replaceTimestemp(packets,timestamp)
-    timestamps,byteSlots0001, byteRates0001=splitToTimeSlot(packets, 0.0001)
+    fileName=""
+    packets=readPcap(fileName)
+    timestamps=readTimestamp()
+
     timestamps,byteSlots0002, byteRates0002 = splitToTimeSlot(packets, 0.0002)
     print("total bytes that get from every       packets:", getTotalBytes(packets))
     print("total bytes that get from every 0.0001s slots:", sum(byteSlots0001))
