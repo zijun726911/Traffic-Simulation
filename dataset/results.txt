@@ -1,0 +1,17 @@
+total bits that get from every       packets: 10765766
+total bits that get from every 0.0001s slots: 10765766
+total bits that get from every 0.0002s slots: 10765766
+
+average bitrate get from every             packets: 610285824.1625493019456160362
+average bitrate get from every  every 0.0001 slots: 608235367.2316383889314013350
+average bitrate get from every  every 0.0002 slots: 604818314.6067415440497642499
+
+total bits that get from every       packets: 20998555
+total bits that get from every 0.0001s slots: 20998555
+total bits that get from every 0.0002s slots: 20998555
+
+average bitrate get from every             packets: 564109233.9995053227503098718
+average bitrate get from every  every 0.0001 slots: 562963941.0187667290539622086
+average bitrate get from every  every 0.0002 slots: 561458689.8395721656072938610
+
+7vkKyLLDgstUBDz
