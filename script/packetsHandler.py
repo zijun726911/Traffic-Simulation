@@ -3,6 +3,20 @@ import numpy as np
 import  statsmodels.api as sm
 
 def splitToTimeSlot(timestampsAndWirelens,timeInterval):
+
+    '''
+    :param timestampsAndWirelens: tuple list of timestamp and ccorresponding packet length.
+    sample: timestampsAndWirelens=[(1521118800.000005990,185),(1521118800.000007272,202),(1521118800.000008553,56)]
+
+    :param timeInterval: numper of second per time unit
+
+    :returns: packNums: packets number of every time unit
+            timestamps: timestamps of every time unit (use the timestamp of last packet of this time unit as the timestamp of this time unit )
+            byteSlots: byte number of every time unit
+            byteRates: byte rate of every time unit
+
+    '''
+
     timeInterval=Decimal(str(timeInterval))
     startTime = Decimal(str(timestampsAndWirelens[0][0]))  #get the timestamp of the first packet
     byteRates = []
@@ -23,16 +37,15 @@ def splitToTimeSlot(timestampsAndWirelens,timeInterval):
             # start next slot
             startThisSlot=endThisSlot
             endThisSlot= startThisSlot + timeInterval
-            timestamps.append(timestamp)
+            timestamps.append(startThisSlot)
             byteSlots.append(thisBytes)
             byteRates.append(thisBytes/timeInterval)
             packNums.append(thisPackNum)
             thisBytes=wirelen   #add first packet to the next slot
             thisPackNum=1
 
-
     #add last slot
-    timestamps.append(timestamp)
+    timestamps.append(startThisSlot)
     byteSlots.append(thisBytes)
     packNums.append(thisPackNum)
     byteRates.append(thisBytes / timeInterval)

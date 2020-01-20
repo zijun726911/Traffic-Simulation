@@ -44,11 +44,6 @@ def getwirelen(packets):
 
 
 
-
-
-
-
-
 #
 #
 #
