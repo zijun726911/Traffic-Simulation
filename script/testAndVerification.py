@@ -2,6 +2,7 @@ import matplotlib.pylab as plt
 import statsmodels.tsa.api as smt
 import seaborn as sns
 import pandas as pd
+from statsmodels.tsa.seasonal import seasonal_decompose
 
 def tsplot(y, lags=None, title='', figsize=(10, 15)):
     fig = plt.figure(figsize=figsize)
@@ -13,7 +14,8 @@ def tsplot(y, lags=None, title='', figsize=(10, 15)):
 
     y.plot(ax=ts_ax)
     ts_ax.set_title(title)
-    y.plot(ax=hist_ax, kind='hist', bins=25)
+    sns.distplot(y,ax=hist_ax)
+    # y.plot(ax=hist_ax, kind='hist',bins=30)
     hist_ax.set_title('Histogram')
     smt.graphics.plot_acf(y, lags=lags, ax=acf_ax)
     smt.graphics.plot_pacf(y, lags=lags, ax=pacf_ax)
@@ -45,3 +47,43 @@ def test_stationarity(timeseries):
         dfoutput['Critical Value(%s)' % key] = value
 
     print(dfoutput)
+
+
+
+
+
+def decompose(timeseries,  freq = None):
+
+    # 返回包含三个部分 trend（趋势部分） ， seasonal（季节性部分） 和residual (残留部分)
+    decomposition = seasonal_decompose(timeseries, freq=freq)
+
+    trend = decomposition.trend
+    seasonal = decomposition.seasonal
+    residual = decomposition.resid
+    plt.figure(figsize=(30, 30))
+    plt.subplot(411)
+    plt.plot(timeseries, label='Original')
+    plt.legend(loc='best')
+    plt.subplot(412)
+    plt.plot(trend, label='Trend')
+    plt.legend(loc='best')
+    plt.subplot(413)
+    plt.plot(seasonal, label='Seasonality')
+    plt.legend(loc='best')
+    plt.subplot(414)
+    plt.plot(residual, label='Residuals')
+    plt.legend(loc='best')
+    plt.tight_layout()
+    plt.show()
+    return trend, seasonal, residual
+
+def plotTrainTestPredict(data_train,data_test,data_predict):
+    plt.figure(figsize=(40, 8))
+    plt.xticks(rotation=45)
+
+    plt.plot(data_train.iloc[4000:])
+    plt.plot(data_test)
+    plt.plot(data_predict.iloc[4000:])
+    plt.legend([ "train set","test set", "pred"], loc="best")
+    plt.title("test set &train set & prediction")
+    plt.savefig("test set &train set & prediction")

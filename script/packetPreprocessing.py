@@ -10,22 +10,24 @@ import libpcap
 
 from decimal import Decimal
 import time
+
+graph_path_prefix='..\graph'
+data_path_prefix='..\dataset'
+
 def readPcap(fileName):
-    fileName = "..\dataset\equinix-nyc.dirA.20180315-130000.UTC.anon.pcap\equinix-nyc.dirA.20180315-130000.UTC.anon.pcap"
 
     packets = RawPcapReader(fileName)
-
 
     return packets
 
 def readTimestamp(timestampsFileName):
 
-    timestampsPath = "..\dataset\equinix-nyc.dirA.20180315-130000.UTC.anon.times"
-    timestampsFileName = "\equinix-nyc.dirA.20180315-130000.UTC.anon.times"
-    timestampsFile = open(timestampsPath + timestampsFileName)
 
+    if timestampsFileName.split('.')[-1]!='times':
+        raise Exception('Not timestamp file!')
+
+    timestampsFile = open(timestampsFileName)
     timestamps = timestampsFile.readlines()
-
     timestampsDecimal = list(map(lambda line: Decimal(line.strip()), timestamps))
     return timestampsDecimal
 
