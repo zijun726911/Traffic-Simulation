@@ -2,26 +2,37 @@ import matplotlib.pylab as plt
 import statsmodels.tsa.api as smt
 import seaborn as sns
 import pandas as pd
+from pandas import Series
 from statsmodels.tsa.seasonal import seasonal_decompose
 
-def tsplot(y, lags=None, title='', figsize=(10, 15)):
-    fig = plt.figure(figsize=figsize)
-
-    ts_ax = plt.subplot(4, 1, 1)
-    hist_ax = plt.subplot(4, 1, 2)
-    acf_ax = plt.subplot(4, 1, 3)
-    pacf_ax = plt.subplot(4, 1, 4)
+def tsplot(y: pd.Series, lags=None, title='', figsize=(10, 15)):
+    fig = plt.figure(figsize=figsize) #type: plt.Figure
+    # plt.xticks(fontsize=20)
+    # plt.yticks(fontsize=20)
+    ts_ax = plt.subplot(4, 1, 1) #type:plt.Axes
+    hist_ax = plt.subplot(4, 1, 2) #type:plt.Axes
+    acf_ax = plt.subplot(4, 1, 3) #type:plt.Axes
+    pacf_ax = plt.subplot(4, 1, 4) #type:plt.Axes
 
     y.plot(ax=ts_ax)
     ts_ax.set_title(title)
     sns.distplot(y,ax=hist_ax)
     # y.plot(ax=hist_ax, kind='hist',bins=30)
     hist_ax.set_title('Histogram')
+    hist_ax.set_xlabel("Traffic rate (Bytes/s)")
+
+
+    acf_ax.set_ylabel("ACF")
+    acf_ax.set_xlabel("Times Shift (Lags)")
     smt.graphics.plot_acf(y, lags=lags, ax=acf_ax)
+
+    acf_ax.set_ylabel("PACF")
+    pacf_ax.set_xlabel("Times Shift (Lags)")
     smt.graphics.plot_pacf(y, lags=lags, ax=pacf_ax)
     [ax.set_xlim(0) for ax in [acf_ax, pacf_ax]]
     sns.despine()
     fig.tight_layout()
+    fig.savefig("../graph/tsplot"+title)
     return ts_ax, acf_ax, pacf_ax
 
 
@@ -39,6 +50,7 @@ def test_stationarity(timeseries):
     plt.legend(loc='best')
     plt.title("Rolling Mean & Standard Deviation")
     plt.show(block=False)
+    plt.savefig("../graph/test_stationarity")
 
     print("Results of Dickey-Fuller Test:")
     dftest = adfuller(timeseries, autolag="AIC")
@@ -52,30 +64,30 @@ def test_stationarity(timeseries):
 
 
 
-def decompose(timeseries,  freq = None):
-
-    # 返回包含三个部分 trend（趋势部分） ， seasonal（季节性部分） 和residual (残留部分)
-    decomposition = seasonal_decompose(timeseries, freq=freq)
-
-    trend = decomposition.trend
-    seasonal = decomposition.seasonal
-    residual = decomposition.resid
-    plt.figure(figsize=(30, 30))
-    plt.subplot(411)
-    plt.plot(timeseries, label='Original')
-    plt.legend(loc='best')
-    plt.subplot(412)
-    plt.plot(trend, label='Trend')
-    plt.legend(loc='best')
-    plt.subplot(413)
-    plt.plot(seasonal, label='Seasonality')
-    plt.legend(loc='best')
-    plt.subplot(414)
-    plt.plot(residual, label='Residuals')
-    plt.legend(loc='best')
-    plt.tight_layout()
-    plt.show()
-    return trend, seasonal, residual
+# def decompose(timeseries,  freq = None):
+#
+#     # 返回包含三个部分 trend（趋势部分） ， seasonal（季节性部分） 和residual (残留部分)
+#     decomposition = seasonal_decompose(timeseries, freq=freq)
+#
+#     trend = decomposition.trend
+#     seasonal = decomposition.seasonal
+#     residual = decomposition.resid
+#     plt.figure(figsize=(30, 30))
+#     plt.subplot(411)
+#     plt.plot(timeseries, label='Original')
+#     plt.legend(loc='best')
+#     plt.subplot(412)
+#     plt.plot(trend, label='Trend')
+#     plt.legend(loc='best')
+#     plt.subplot(413)
+#     plt.plot(seasonal, label='Seasonality')
+#     plt.legend(loc='best')
+#     plt.subplot(414)
+#     plt.plot(residual, label='Residuals')
+#     plt.legend(loc='best')
+#     plt.tight_layout()
+#     plt.show()
+#     return trend, seasonal, residual
 
 def plotTrainTestPredict(data_train,data_test,data_predict):
     plt.figure(figsize=(40, 8))
@@ -87,3 +99,44 @@ def plotTrainTestPredict(data_train,data_test,data_predict):
     plt.legend([ "train set","test set", "pred"], loc="best")
     plt.title("test set &train set & prediction")
     plt.savefig("test set &train set & prediction")
+
+
+def plot_diff_timescales(scale10: Series,
+                         scale1: Series,
+                         scale0p1: Series,
+                         scale0p01: Series):
+    figure = plt.figure(1)
+    figure.set_size_inches(30, 30)
+    plt.subplots_adjust(hspace=0.4)
+
+    # ax1.set(xlim=[0.1,1.2],ylim=[1.4,6],title='NO.1-subplot',ylabel='y1-axis',xlabel='x1-axis')  #设置子图的属性，包括xy轴的范围和标题
+    # ax2.set(xlim=[0.5,1.5],ylim=[100,300],title='NO.2-subplot',ylabel='y2-axis',xlabel='x2-axis')
+    # axes1.set(title='Traffic rate at different timescales\n10s timescale')
+
+    plt.suptitle("Traffic rate at different timescales", y=0.93, fontsize=50, weight='bold')
+
+    axes1 = plt.subplot(411)  # type: Axes
+    axes1.set_title("10s Timescale", fontsize=30)
+    axes1.set_xlabel("Time (s)", fontsize=20)
+    axes1.set_ylabel("Traffic rate (Bytes/s)", fontsize=20)
+    axes1.plot(scale10.index, scale10, linestyle='solid')
+
+    axes2 = plt.subplot(412)  # type: Axes
+    axes2.plot(scale1.index, scale1, linestyle='dotted')
+    axes2.set_title("1s Timescale", fontsize=30)
+    axes2.set_xlabel("Time (s)", fontsize=20)
+    axes2.set_ylabel("Traffic rate (Bytes/s)", fontsize=20)
+
+    axes3 = plt.subplot(413)  # type: Axes
+    axes3.plot(scale0p1.index, scale0p1, linestyle='dashed')
+    axes3.set_title("0.1s Timescale", fontsize=30)
+    axes3.set_xlabel("Time (s)", fontsize=20)
+    axes3.set_ylabel("Traffic rate (Bytes/s)", fontsize=20)
+
+    axes4 = plt.subplot(414)  # type: Axes
+    axes4.plot(scale0p01.index, scale0p01, linestyle='dashdot')
+    axes4.set_title("0.01s Timescale", fontsize=30)
+    axes4.set_xlabel("Time (s)", fontsize=20)
+    axes4.set_ylabel("Traffic rate (Bytes/s)", fontsize=20)
+
+    figure.savefig("../graph/byterate_for_0_001s_time_slot")
