@@ -1,12 +1,7 @@
 from functools import reduce
 
 from scapy.all import rdpcap, RawPcapReader
-import numpy as np
-import scipy.stats as st
-from scapy.packet import Packet
-from scipy.stats import norm
-from scipy.stats import kstest
-import libpcap
+
 
 from decimal import Decimal
 import time

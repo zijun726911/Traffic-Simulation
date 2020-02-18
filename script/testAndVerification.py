@@ -2,13 +2,15 @@ import matplotlib.pylab as plt
 import statsmodels.tsa.api as smt
 import seaborn as sns
 import pandas as pd
+import numpy as np
 from pandas import Series
 from statsmodels.tsa.seasonal import seasonal_decompose
 
-def tsplot(y: pd.Series, lags=None, title='', figsize=(10, 15)):
+def tsplot(y: pd.Series, lags=None, title='', figsize=(10, 20)):
     fig = plt.figure(figsize=figsize) #type: plt.Figure
-    # plt.xticks(fontsize=20)
-    # plt.yticks(fontsize=20)
+
+    plt.xticks(fontsize=20)
+    plt.yticks(fontsize=20)
     ts_ax = plt.subplot(4, 1, 1) #type:plt.Axes
     hist_ax = plt.subplot(4, 1, 2) #type:plt.Axes
     acf_ax = plt.subplot(4, 1, 3) #type:plt.Axes
@@ -16,23 +18,25 @@ def tsplot(y: pd.Series, lags=None, title='', figsize=(10, 15)):
 
     y.plot(ax=ts_ax)
     ts_ax.set_title(title)
+    ts_ax.set_ylabel("Traffic rate (Bytes/s)")
     sns.distplot(y,ax=hist_ax)
     # y.plot(ax=hist_ax, kind='hist',bins=30)
     hist_ax.set_title('Histogram')
     hist_ax.set_xlabel("Traffic rate (Bytes/s)")
+    hist_ax.set_ylabel("Probability")
 
 
     acf_ax.set_ylabel("ACF")
     acf_ax.set_xlabel("Times Shift (Lags)")
     smt.graphics.plot_acf(y, lags=lags, ax=acf_ax)
 
-    acf_ax.set_ylabel("PACF")
+    pacf_ax.set_ylabel("PACF")
     pacf_ax.set_xlabel("Times Shift (Lags)")
     smt.graphics.plot_pacf(y, lags=lags, ax=pacf_ax)
     [ax.set_xlim(0) for ax in [acf_ax, pacf_ax]]
     sns.despine()
     fig.tight_layout()
-    fig.savefig("../graph/tsplot"+title)
+    fig.savefig("../graph/tsplot_"+title.replace(".","p"),dpi=100)
     return ts_ax, acf_ax, pacf_ax
 
 
@@ -105,16 +109,14 @@ def plot_diff_timescales(scale10: Series,
                          scale1: Series,
                          scale0p1: Series,
                          scale0p01: Series):
+
     figure = plt.figure(1)
     figure.set_size_inches(30, 30)
     plt.subplots_adjust(hspace=0.4)
 
-    # ax1.set(xlim=[0.1,1.2],ylim=[1.4,6],title='NO.1-subplot',ylabel='y1-axis',xlabel='x1-axis')  #设置子图的属性，包括xy轴的范围和标题
-    # ax2.set(xlim=[0.5,1.5],ylim=[100,300],title='NO.2-subplot',ylabel='y2-axis',xlabel='x2-axis')
-    # axes1.set(title='Traffic rate at different timescales\n10s timescale')
 
-    plt.suptitle("Traffic rate at different timescales", y=0.93, fontsize=50, weight='bold')
-
+    plt.suptitle("Traffic Rate at Different Timescales", y=0.93, fontsize=50, weight='bold')
+    # plt.suptitle("")
     axes1 = plt.subplot(411)  # type: Axes
     axes1.set_title("10s Timescale", fontsize=30)
     axes1.set_xlabel("Time (s)", fontsize=20)
@@ -139,4 +141,31 @@ def plot_diff_timescales(scale10: Series,
     axes4.set_xlabel("Time (s)", fontsize=20)
     axes4.set_ylabel("Traffic rate (Bytes/s)", fontsize=20)
 
-    figure.savefig("../graph/byterate_for_0_001s_time_slot")
+    figure.savefig("../graph/Traffic Rate at Different Timescales")
+    plt.close('all')
+
+
+def plot_packet_len_dist(timestampsAndWirelensPD: Series):
+    plt.figure(figsize=(20, 15))
+    plt.title("Packet Length Distrbution", fontsize=20)
+    axes = sns.distplot(timestampsAndWirelensPD["wirelen"])
+    axes.set_xticks(np.arange(0, 1700, 100))
+    axes.set_xticklabels(np.arange(0, 1700, 100))
+    plt.ylabel("Probability", fontsize=20)
+    plt.xlabel("Packet Length", fontsize=20)
+    plt.savefig("../graph/Packet Length Distrbution")
+    plt.close('all')
+
+
+def plot_arrival_time_diff(timestampsAndWirelensPD_origin:Series):
+    arrival_time_diff = timestampsAndWirelensPD_origin['timestamp'].diff(1)
+    plt.figure(figsize=(25, 15))
+    plt.xticks(fontsize=20, rotation='40')
+    plt.yticks(fontsize=20)
+    plt.title("Packets Arrival Time Difference Distribution", fontsize=40)
+    axes = sns.distplot(arrival_time_diff)  # type:Axes
+    axes.set_xticks(np.arange(0, 0.00007, 0.000005))
+    axes.set_xticklabels(np.arange(0, 0.07, 0.005))
+    plt.ylabel("Probability", fontsize=20)
+    plt.xlabel("Packets Arrival Time Difference (ms)", fontsize=20)
+    plt.savefig("../graph/Arrival Time Difference")

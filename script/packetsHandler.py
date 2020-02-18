@@ -3,9 +3,9 @@ from typing import List
 from typing import Tuple
 import numpy as np
 import  statsmodels.api as sm
-TimestampsAndWirelens=List[Tuple[Decimal, int]]
-def splitToTimeSlot(timestampsAndWirelens:TimestampsAndWirelens
-                    ,timeInterval:float)-> [List,List[Decimal],List,List,List]:
+import pandas as pd
+def splitToTimeSlot(timestampsAndWirelens: pd.Series
+                    ,timeInterval:float)-> [List,List[Decimal],List,List]:
 
     '''
     :param timestampsAndWirelens: tuple list of timestamp and ccorresponding packet length.
@@ -20,7 +20,8 @@ def splitToTimeSlot(timestampsAndWirelens:TimestampsAndWirelens
 
     '''
     timeInterval=Decimal(str(timeInterval))
-    startTime = Decimal(str(timestampsAndWirelens[0][0]))  #get the timestamp of the first packet
+    startTime = Decimal(timestampsAndWirelens['timestamp'].iloc[0])  #get the timestamp of the first packet
+    print("startTime:",str(startTime))
     byteRates = []
     byteSlots = []
     timestamps=[]
@@ -29,8 +30,10 @@ def splitToTimeSlot(timestampsAndWirelens:TimestampsAndWirelens
     thisBytes=0
     startThisSlot = startTime
     endThisSlot = startThisSlot + timeInterval
-    for timestamp, wirelen in timestampsAndWirelens:
-
+    print("endThisSlot:",str(endThisSlot))
+    for timestamp, wirelen in \
+            zip(timestampsAndWirelens['timestamp'],timestampsAndWirelens['wirelen']):
+        timestamp=Decimal(timestamp)
         if startThisSlot <= timestamp < endThisSlot:
             thisBytes += wirelen
             thisPackNum+=1
