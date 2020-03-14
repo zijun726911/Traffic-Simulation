@@ -15,3 +15,61 @@ average bitrate get from every  every 0.0001 slots: 562963941.018766729053962208
 average bitrate get from every  every 0.0002 slots: 561458689.8395721656072938610
 
 7vkKyLLDgstUBDz
+
+
+------------------------  100000 ------------------------
+/usr/bin/python3.6 /home/zijun/Traffic-Simulation/script/st_test.py
+expon -1203527.5371645791 pars:(0.0, 2.181985378265381e-06)
+norm -1155264.2597275563 pars:(2.181985378265381e-06, 2.325486879105624e-06)
+/usr/local/lib/python3.6/dist-packages/scipy/stats/_distn_infrastructure.py:2407: RuntimeWarning: invalid value encountered in double_scalars
+  Lhat = muhat - Shat*mu
+pareto -1201639.7371721617 pars:(3.8513827124917697, -6.941340844869717e-06, 6.941340839630591e-06)
+powerlaw -1359965.2382133394 pars:(0.2636798477431249, -3.02340949540711e-30, 4.082592979870985e-05)
+weibull_min -1283429.5558604847 pars:(0.7744032193054925, -2.6640544588109357e-36, 2.771292512182472e-06)
+Best fit reached using powerlaw, MLE value: -1359965.2382133394
+
+Process finished with exit code 0
+
+
+
+
+/usr/bin/python3.6 /home/zijun/Traffic-Simulation/script/st_test.py
+expon -1203619.2540642435 pars:(0.0, 2.179985046386719e-06)
+norm -1155221.7659367532 pars:(2.179985046386719e-06, 2.3264752766240915e-06)
+/usr/local/lib/python3.6/dist-packages/scipy/stats/_distn_infrastructure.py:2407: RuntimeWarning: invalid value encountered in double_scalars
+  Lhat = muhat - Shat*mu
+pareto -1201767.198359385 pars:(3.8513835859946597, -6.930954561693427e-06, 6.930954561669541e-06)
+powerlaw -1360057.9837297634 pars:(0.2957636398244048, -7.114728746847318e-31, 3.544221584605452e-05)
+weibull_min -1247500.9244804962 pars:(0.8734809706926082, -3.306427011146655e-34, 2.0660683684764772e-06)
+Best fit reached using powerlaw, MLE value: -1360057.9837297634
+
+Process finished with exit code 0
+  
+------------------------  1000000 ------------------------
+/usr/bin/python3.6 /home/zijun/Traffic-Simulation/script/st_test.py
+expon -12038515.130073974 pars:(0.0, 2.1749277114868165e-06)
+norm -11548899.55313244 pars:(2.1749277114868165e-06, 2.3342075899695215e-06)
+/usr/local/lib/python3.6/dist-packages/scipy/stats/_distn_infrastructure.py:2407: RuntimeWarning: invalid value encountered in double_scalars
+  Lhat = muhat - Shat*mu
+pareto -12020574.492040766 pars:(3.8513853032434398, -6.908577155107956e-06, 6.9085771550233184e-06)
+powerlaw -13898475.970664084 pars:(0.20138814901534852, -2.918008741827293e-32, 6.235969596969047e-05)
+weibull_min -12341017.127351593 pars:(0.9174370046422369, -4.7726196852295084e-35, 2.0689551735127242e-06)
+Best fit reached using powerlaw, MLE value: -13898475.970664084
+
+Process finished with exit code 0
+
+/usr/bin/python3.6 /home/zijun/Traffic-Simulation/script/st_test.py
+expon -12039099.25373707 pars:(0.0, 2.173657655715942e-06)
+norm -11550704.052298417 pars:(2.173657655715942e-06, 2.3299993123788314e-06)
+/usr/local/lib/python3.6/dist-packages/scipy/stats/_distn_infrastructure.py:2407: RuntimeWarning: invalid value encountered in double_scalars
+  Lhat = muhat - Shat*mu
+pareto -12020745.57986397 pars:(3.851385179548309, -6.910242638426192e-06, 6.910242638333228e-06)
+powerlaw -13708461.123137351 pars:(0.2705769820547269, -3.62147372422371e-32, 5.225231740388507e-05)
+weibull_min -12451683.834634718 pars:(0.8830788250404009, -1.4905696292901355e-34, 2.1308341544797552e-06)
+Best fit reached using powerlaw, MLE value: -13708461.123137351
+
+Process finished with exit code 0
+
+
+
+
