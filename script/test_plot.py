@@ -3,6 +3,7 @@ import statsmodels.tsa.api as smt
 import seaborn as sns
 import pandas as pd
 import numpy as np
+from matplotlib.axes import Axes
 from pandas import Series
 from statsmodels.tsa.seasonal import seasonal_decompose
 
@@ -43,7 +44,7 @@ def tsplot(y: pd.Series, lags=None, title='', figsize=(10, 20)):
 from statsmodels.tsa.stattools import adfuller
 
 
-def test_stationarity(timeseries):
+def test_stationarity(timeseries: Series):
     movingAverage = timeseries.rolling(window=50).mean()
     movingSTD = timeseries.rolling(window=50).std()
     plt.figure(figsize=(15, 10))
@@ -105,67 +106,96 @@ def plotTrainTestPredict(data_train,data_test,data_predict):
     plt.savefig("test set &train set & prediction")
 
 
-def plot_diff_timescales(scale10: Series,
-                         scale1: Series,
+def plot_diff_timescales(scale1: Series,
                          scale0p1: Series,
-                         scale0p01: Series):
-
+                         scale0p01: Series,
+                         scale0p001: Series):
+    plt.figure(figsize=(10, 10))
     figure = plt.figure(1)
-    figure.set_size_inches(30, 30)
-    plt.subplots_adjust(hspace=0.4)
+
+    plt.subplots_adjust(hspace=1)
 
 
-    plt.suptitle("Traffic Rate at Different Timescales", y=0.93, fontsize=50, weight='bold')
-    # plt.suptitle("")
+    plt.suptitle("Traffic Rate at Different Timescales",y=5 ,weight='bold')
+    # plt.suptitle("") y=0.93
+
     axes1 = plt.subplot(411)  # type: Axes
-    axes1.set_title("10s Timescale", fontsize=30)
-    axes1.set_xlabel("Time (s)", fontsize=20)
-    axes1.set_ylabel("Traffic rate (Bytes/s)", fontsize=20)
-    axes1.plot(scale10.index, scale10, linestyle='solid')
+    axes1.set_title("1s Timescale")
+    axes1.set_xlabel("Time (second)",)
+    axes1.set_ylabel("Traffic rate (Bytes/s)")
+    axes1.plot(scale1.index, scale1, linestyle='solid')
 
     axes2 = plt.subplot(412)  # type: Axes
-    axes2.plot(scale1.index, scale1, linestyle='dotted')
-    axes2.set_title("1s Timescale", fontsize=30)
-    axes2.set_xlabel("Time (s)", fontsize=20)
-    axes2.set_ylabel("Traffic rate (Bytes/s)", fontsize=20)
+    axes2.plot(scale0p1.index, scale0p1, linestyle='dotted')
+    axes2.set_title("0.1s Timescale",)
+    axes2.set_xlabel("Time (second)", )
+    axes2.set_ylabel("Traffic rate (Bytes/s)", )
 
     axes3 = plt.subplot(413)  # type: Axes
-    axes3.plot(scale0p1.index, scale0p1, linestyle='dashed')
-    axes3.set_title("0.1s Timescale", fontsize=30)
-    axes3.set_xlabel("Time (s)", fontsize=20)
-    axes3.set_ylabel("Traffic rate (Bytes/s)", fontsize=20)
+    axes3.plot(scale0p01.index, scale0p01, linestyle='dashed')
+    axes3.set_title("0.01s Timescale", )
+    axes3.set_xlabel("Time (second)")
+    axes3.set_ylabel("Traffic rate (Bytes/s)", )
 
     axes4 = plt.subplot(414)  # type: Axes
-    axes4.plot(scale0p01.index, scale0p01, linestyle='dashdot')
-    axes4.set_title("0.01s Timescale", fontsize=30)
-    axes4.set_xlabel("Time (s)", fontsize=20)
-    axes4.set_ylabel("Traffic rate (Bytes/s)", fontsize=20)
-
-    figure.savefig("../graph/Traffic Rate at Different Timescales")
+    axes4.plot(scale0p001.index, scale0p001, linestyle='dashdot')
+    axes4.set_title("0.001s Timescale", )
+    axes4.set_xlabel("Time (second)", )
+    axes4.set_ylabel("Traffic rate (Bytes/s)", )
+    figure.tight_layout()
+    figure.savefig("../graph/Traffic Rate at Different Timescales2",dpi=200)
     plt.close('all')
 
 
 def plot_packet_len_dist(timestampsAndWirelensPD: Series):
+    plt.tight_layout()
     plt.figure(figsize=(20, 15))
-    plt.title("Packet Length Distrbution", fontsize=20)
-    axes = sns.distplot(timestampsAndWirelensPD["wirelen"])
-    axes.set_xticks(np.arange(0, 1700, 100))
+    plt.title("Packet Length Distrbution", fontsize=50)
+    axes = sns.distplot(timestampsAndWirelensPD["wirelen"]) #type: Axes
+    axes.set_xticks(np.arange(0, 1700, 100),)
     axes.set_xticklabels(np.arange(0, 1700, 100))
-    plt.ylabel("Probability", fontsize=20)
-    plt.xlabel("Packet Length", fontsize=20)
+
+    plt.xticks(rotation='40')
+    axes.tick_params(axis="x", labelsize=30)
+    axes.tick_params(axis="y", labelsize=30)
+    plt.ylabel("PDF", fontsize=40)
+    plt.xlabel("Packet Length (Bytes)", fontsize=40)
+
     plt.savefig("../graph/Packet Length Distrbution")
     plt.close('all')
 
 
-def plot_arrival_time_diff(timestampsAndWirelensPD_origin:Series):
-    arrival_time_diff = timestampsAndWirelensPD_origin['timestamp'].diff(1)
+def plot_packet_len_cdf(timestampsAndWirelensPD: Series):
+    plt.tight_layout()
+    plt.figure(figsize=(20, 15))
+    plt.title("Packet Length Cumulative Distrbution", fontsize=50)
+    axes = sns.distplot(timestampsAndWirelensPD["wirelen"],
+                        hist_kws={'cumulative':True}) #type: Axes
+
+    axes.set_xticks(np.arange(0, 1700, 100))
+    axes.set_xticklabels(np.arange(0, 1700, 100))
+
+    plt.xticks(rotation='40')
+    axes.tick_params(axis="x", labelsize=30)
+    axes.tick_params(axis="y", labelsize=30)
+    plt.ylabel("CDF", fontsize=40)
+    plt.xlabel("Packet Length (Bytes)", fontsize=40)
+
+    plt.savefig("../graph/Packet Length CDF")
+    plt.close('all')
+
+
+def plot_arrival_time_diff(timestampsAndWirelensPD_origin:Series): 
+    arrival_time_diff = timestampsAndWirelensPD_origin['timestamp'].diff(1).dropna()
     plt.figure(figsize=(25, 15))
-    plt.xticks(fontsize=20, rotation='40')
-    plt.yticks(fontsize=20)
-    plt.title("Packets Arrival Time Difference Distribution", fontsize=40)
+    
+    plt.title("Packets Arrival Time Difference Distribution",fontsize=30)
     axes = sns.distplot(arrival_time_diff)  # type:Axes
+    plt.xticks(fontsize=20, rotation='40')
     axes.set_xticks(np.arange(0, 0.00007, 0.000005))
     axes.set_xticklabels(np.arange(0, 0.07, 0.005))
-    plt.ylabel("Probability", fontsize=20)
+    plt.yticks(fontsize=20)
+    plt.ylabel("Numbers of Interarrival Time that Fall in to Each Bin", fontsize=20)
     plt.xlabel("Packets Arrival Time Difference (ms)", fontsize=20)
     plt.savefig("../graph/Arrival Time Difference")
+    plt.close('all')
